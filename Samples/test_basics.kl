@@ -1,0 +1,60 @@
+require FEUnitTest;
+
+object TestBoolean : TestCase {};
+TestBoolean.testAssertTrue!()
+{
+	this.assertTrue(true);
+	this.assertTrue("true != true", true);
+}
+TestBoolean.testAssertFalse!()
+{
+	this.assertFalse(false);
+	this.assertFalse("false != false", false);
+}
+
+object TestString : TestCase {};
+TestString.test!()
+{
+	this.assertEquals("hello", "hello");
+	this.assertNotEquals("hello", "world");
+}
+
+object TestInteger : TestCase {};
+TestInteger.test!()
+{
+	this.assertEquals(314, 314);
+	this.assertNotEquals(314, 628);
+}
+
+object TestScalar : TestCase {};
+TestScalar.test!()
+{
+	this.assertEquals(3.14, 3.14);
+	this.assertNotEquals(3.14, 6.28);
+}
+
+object TestAlmostEquals : TestCase {};
+TestAlmostEquals.test!()
+{
+	this.assertAlmostEquals(3.14001, 3.14);
+}
+
+object Custom 
+{
+	String name;
+	Scalar value;
+};
+Custom(String name, Scalar value)
+{
+	this.name = name;
+	this.value = value;
+}
+
+object TestCustomObject : TestCase {};
+TestCustomObject.test!()
+{
+	Custom c1("hello", 3.14);
+	Custom c2("world", 3.14);
+	this.assertEquals(c1, c1);
+	this.assertNotEquals(c1, c2);
+}

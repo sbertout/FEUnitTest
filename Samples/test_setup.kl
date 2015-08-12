@@ -1,0 +1,45 @@
+require FEUnitTest;
+require Singletons;
+
+object MySingleton 
+{
+	Index setUpCount, tearDownCount;
+};
+MySingleton()
+{
+	this.setUpCount = 0;
+	this.tearDownCount = 0;
+}
+
+MySingleton getMySingletonInstance()
+{
+	MySingleton someSingleton = Singleton_get('MySingleton');
+	if (someSingleton == null)
+	{
+		someSingleton = MySingleton();
+		Singleton_set('MySingleton', someSingleton);
+	}
+	return someSingleton;
+}
+
+object TestBase : TestCase {};
+TestBase.setUp!()
+{
+	getMySingletonInstance().setUpCount += 1;
+}
+TestBase.tearDown!()
+{
+	getMySingletonInstance().tearDownCount += 1;
+}
+
+object TestSetUp : TestBase {};
+TestSetUp.testA!()
+{
+	this.assertEquals(getMySingletonInstance().setUpCount, 1);
+	this.assertEquals(getMySingletonInstance().tearDownCount, 0);
+}
+TestSetUp.testB!()
+{
+	this.assertEquals(getMySingletonInstance().setUpCount, 2);
+	this.assertEquals(getMySingletonInstance().tearDownCount, 1);
+}

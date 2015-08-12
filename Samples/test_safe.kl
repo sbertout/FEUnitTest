@@ -1,0 +1,17 @@
+require FEUnitTest;
+require Alembic;
+
+object TestSafe : TestCase {};
+TestSafe.test!()
+{
+	AlembicIArchive archive('Resources/boxes.abc');
+	if (this.assertTrue('Archive is null!', archive != null))
+	{
+		this.assertEquals(archive.valid(), true);
+		this.assertEquals(archive.getName(), 'Resources/boxes.abc');
+		this.assertEquals(archive.getTop().getName(), 'ABC');
+		this.assertEquals(archive.getTop().getFullName(), '/');
+		this.assertEquals(archive.getArchiveVersion(), 10105);
+	}
+}
+

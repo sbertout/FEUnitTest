@@ -1,0 +1,102 @@
+require FileIO;
+
+interface TestCaseInterface
+{
+	setUp!();
+	tearDown!();
+};
+
+object TestSuite;
+object TestCase : TestCaseInterface permits TestSuite
+{
+	private Boolean valid;	
+	private TextReader reader;
+};
+
+TestCase()
+{
+	this.valid = true;
+}
+
+Boolean TestCase.isValid() { return this.valid ; }
+
+String TestCase.getName()
+{
+	return String(this.type());
+}
+
+TestCase.setUp!() { /* doing nothing per default but can be overriden */ }
+TestCase.tearDown!() { /* doing nothing per default but can be overriden */ }
+
+private TestCase.invalid!(String msg)
+{
+	this.valid = false;
+	setError(this.getName() + ": " + msg);
+}
+
+TestCase.setOutFile!(String fp)
+{
+	this.reader = TextReader(fp);
+}
+TestCase.report!(String s)
+{
+	this.assertEquals(s, this.reader.readLine());
+}
+
+Boolean TestCase.assertTrue!(Boolean b) { return this.assertTrue('', b); }
+Boolean TestCase.assertTrue!(String msg, Boolean b)
+{
+	if (!b)
+	{
+		this.invalid(msg);
+		return false;
+	}
+	return true;
+}
+
+Boolean TestCase.assertFalse!(Boolean b) { return this.assertFalse('', b); }
+Boolean TestCase.assertFalse!(String msg, Boolean b)
+{
+	if (b)
+	{
+		this.invalid(msg);
+		return false;
+	}
+	return true;
+}
+
+Boolean TestCase.assertEquals!(String a, String b) { return this.assertEquals('', a, b); }
+Boolean TestCase.assertEquals!(String msg, String a, String b)
+{
+	if (a != b)
+	{
+		this.invalid(msg + "assertEquals(" +  a + " != " + b + ")");
+		return false;
+	}
+	return true;
+}
+
+Boolean TestCase.assertNotEquals!(String a, String b) { return this.assertNotEquals('', a, b); }
+Boolean TestCase.assertNotEquals!(String msg, String a, String b)
+{
+	if (a == b)
+	{
+		this.invalid(msg + "assertNotEquals(" +  a + " == " + b + ")");
+		return false;
+	}
+	return true;
+}
+
+Boolean TestCase.assertAlmostEquals!(Scalar a, Scalar b) { return this.assertAlmostEquals('', a, b); }
+Boolean TestCase.assertAlmostEquals!(String msg, Scalar a, Scalar b) { return this.assertAlmostEquals('', a, b, 0.001f); }
+Boolean TestCase.assertAlmostEquals!(String msg, Scalar a, Scalar b, Scalar epsilon)
+{
+	if (abs(a - b) > epsilon)
+	{
+		this.invalid(msg + "assertAlmostEquals(" +  a + " != " + b + ")");
+		return false;
+	}
+	return true;
+}
+
+

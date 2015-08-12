@@ -1,0 +1,9 @@
+require FEUnitTest;
+
+object TestReport : TestCase {};
+TestReport.test!()
+{
+	this.report('hello');
+	this.report('world');
+	this.report('!!!');
+}
